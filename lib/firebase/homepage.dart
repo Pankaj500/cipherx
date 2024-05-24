@@ -22,6 +22,7 @@ class _FirebaseHomepageState extends State<FirebaseHomepage> {
     setState(() {});
   }
 
+  bool change = false;
   Widget alltaskdetails() {
     return StreamBuilder(
         stream: personstream,
@@ -86,6 +87,15 @@ class _FirebaseHomepageState extends State<FirebaseHomepage> {
                                 mainAxisAlignment:
                                     MainAxisAlignment.spaceBetween,
                                 children: [
+                                  Checkbox(
+                                      value: ds['status'],
+                                      onChanged: (value) async {
+                                        Map<String, dynamic> changecheck = {
+                                          'status': !ds['status'],
+                                        };
+                                        await DatabaseMedthod()
+                                            .updatetasks(ds['id'], changecheck);
+                                      }),
                                   GestureDetector(
                                     onTap: () {
                                       titlecontroller.text = ds['title'];
