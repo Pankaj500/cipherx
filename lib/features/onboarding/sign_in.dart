@@ -1,5 +1,6 @@
 import 'package:cipherx/features/onboarding/auth.dart';
 import 'package:cipherx/features/onboarding/onboarding.dart';
+import 'package:cipherx/firebase/homepage.dart';
 import 'package:cipherx/repositories/product._repo.dart';
 
 import 'package:flutter/material.dart';
@@ -84,7 +85,7 @@ class SignInPage extends ConsumerWidget {
                       obscureText: true,
                       decoration: InputDecoration(
                         hintText: 'Password',
-                        suffixIcon: const Icon(Icons.remove_red_eye),
+                        // suffixIcon: const Icon(Icons.remove_red_eye),
                         suffixIconColor: Colors.grey,
                         hintStyle: TextStyle(
                           color: Colors.grey.withOpacity(0.5),
@@ -103,7 +104,11 @@ class SignInPage extends ConsumerWidget {
                         emailcontroller.text.toString(),
                         passwordcontroller.text.toString(),
                         context);
-                    _getProductList.getproduct(ref, context);
+                    // _getProductList.getproduct(ref, context);
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => const FirebaseHomepage()));
                   },
                   child: Container(
                     height: size.height * 0.07,

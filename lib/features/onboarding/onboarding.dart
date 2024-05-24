@@ -5,6 +5,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:provider/provider.dart';
 
+import '../../firebase/homepage.dart';
+
 class OnBoardingPage extends StatelessWidget {
   OnBoardingPage({super.key});
   final Auth _auth = Auth();
@@ -187,6 +189,10 @@ class OnBoardingPage extends StatelessWidget {
                           emailcontroller.text.toString(),
                           passwordcontroller.text.toString(),
                           context);
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => const FirebaseHomepage()));
                     },
                     child: Container(
                       height: size.height * 0.07,

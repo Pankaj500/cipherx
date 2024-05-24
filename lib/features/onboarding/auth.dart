@@ -1,4 +1,5 @@
 import 'package:cipherx/features/product.dart';
+import 'package:cipherx/firebase/homepage.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
@@ -17,7 +18,7 @@ class Auth {
       Navigator.push(
         context,
         MaterialPageRoute(
-          builder: (context) => MyProduct(),
+          builder: (context) => FirebaseHomepage(),
         ),
       );
     } catch (e) {

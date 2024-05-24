@@ -1,4 +1,5 @@
 import 'package:cipherx/features/splash_screen.dart';
+import 'package:cipherx/firebase/homepage.dart';
 
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
@@ -11,7 +12,7 @@ void main() async {
     apiKey: 'AIzaSyC7tz5NIMIbbl8rcPJHlG-8cMwUH2n9RG4',
     appId: 'appId',
     messagingSenderId: 'messagingSenderId',
-    projectId: 'projectId',
+    projectId: 'cipherx-a2088',
     storageBucket: 'storageBucket',
   ));
   runApp(const ProviderScope(child: MyApp()));

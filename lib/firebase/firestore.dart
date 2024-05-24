@@ -1,21 +1,25 @@
-import 'package:flutter/material.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
-class Practice1 extends StatefulWidget {
-  const Practice1({super.key});
+class DatabaseMedthod {
+  Future addtask(Map<String, dynamic> taskinfo, String id) async {
+    return await FirebaseFirestore.instance
+        .collection("persons")
+        .doc(id)
+        .set(taskinfo);
+  }
 
-  @override
-  State<Practice1> createState() => _Practice1State();
-}
+  Future<Stream<QuerySnapshot>> getalltask() async {
+    return await FirebaseFirestore.instance.collection("persons").snapshots();
+  }
 
-class _Practice1State extends State<Practice1> {
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Colors.blue,
-        title: Text('firestore'),
-        centerTitle: true,
-      ),
-    );
+  Future updatetasks(String id, Map<String, dynamic> taskinfo) async {
+    await FirebaseFirestore.instance
+        .collection("persons")
+        .doc(id)
+        .update(taskinfo);
+  }
+
+  Future deletetasks(String id) async {
+    await FirebaseFirestore.instance.collection("persons").doc(id).delete();
   }
 }

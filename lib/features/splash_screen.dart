@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:cipherx/features/getting_started.dart';
+import 'package:cipherx/features/onboarding/sign_in.dart';
 import 'package:flutter/material.dart';
 
 class SplashScreen extends StatefulWidget {
@@ -15,8 +16,8 @@ class _SplashScreenState extends State<SplashScreen> {
   initState() {
     super.initState();
     Timer(const Duration(seconds: 3), () {
-      Navigator.push(context,
-          MaterialPageRoute(builder: (context) => const GettingStarted()));
+      Navigator.push(
+          context, MaterialPageRoute(builder: (context) => SignInPage()));
     });
   }
 
