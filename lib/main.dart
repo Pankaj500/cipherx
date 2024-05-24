@@ -1,5 +1,4 @@
 import 'package:cipherx/features/splash_screen.dart';
-import 'package:cipherx/firebase/homepage.dart';
 
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
