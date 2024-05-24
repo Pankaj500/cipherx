@@ -64,9 +64,12 @@ class _AddTaskState extends State<AddTask> {
                     'status': false,
                     'id': id,
                   };
-                  await DatabaseMedthod().addtask(taskinfo, id);
+                  await DatabaseMedthod().addtask(taskinfo, id).then((value) {
+                    ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                        content: Text('task added successfully')));
+                  });
                 },
-                child: Text('submit')),
+                child: const Text('submit')),
           ],
         ),
       ),
