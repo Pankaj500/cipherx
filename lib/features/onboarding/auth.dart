@@ -1,5 +1,6 @@
 import 'package:cipherx/features/product.dart';
 import 'package:cipherx/firebase/homepage.dart';
+import 'package:cipherx/firebase/messaging/tasks_home.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
@@ -18,7 +19,7 @@ class Auth {
       Navigator.push(
         context,
         MaterialPageRoute(
-          builder: (context) => FirebaseHomepage(),
+          builder: (context) => HomeTasks(),
         ),
       );
     } catch (e) {
@@ -40,7 +41,7 @@ class Auth {
       Navigator.push(
         context,
         MaterialPageRoute(
-          builder: (context) => const MyProduct(),
+          builder: (context) => const HomeTasks(),
         ),
       );
     } catch (e) {

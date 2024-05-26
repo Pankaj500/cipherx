@@ -1,7 +1,5 @@
 import 'package:cipherx/features/onboarding/auth.dart';
 import 'package:cipherx/features/onboarding/onboarding.dart';
-import 'package:cipherx/firebase/homepage.dart';
-import 'package:cipherx/repositories/product._repo.dart';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -14,7 +12,7 @@ class SignInPage extends ConsumerWidget {
 
   final TextEditingController passwordcontroller = TextEditingController();
 
-  final GetProductList _getProductList = GetProductList();
+  //final GetProductList _getProductList = GetProductList();
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -105,10 +103,6 @@ class SignInPage extends ConsumerWidget {
                         passwordcontroller.text.toString(),
                         context);
                     // _getProductList.getproduct(ref, context);
-                    Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => const FirebaseHomepage()));
                   },
                   child: Container(
                     height: size.height * 0.07,

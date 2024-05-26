@@ -2,6 +2,7 @@ import 'package:cipherx/firebase/add_task.dart';
 import 'package:cipherx/firebase/firestore.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 
 class FirebaseHomepage extends StatefulWidget {
   const FirebaseHomepage({super.key});
@@ -15,11 +16,39 @@ class _FirebaseHomepageState extends State<FirebaseHomepage> {
   TextEditingController descriptioncontroller = TextEditingController();
   TextEditingController deadlinecontroller = TextEditingController();
   TextEditingController durationcontroller = TextEditingController();
+  TextEditingController _dateTimeController = TextEditingController();
   Stream? personstream;
 
   getloadmethod() async {
     personstream = await DatabaseMedthod().getalltask();
     setState(() {});
+  }
+
+  Future<void> _pickDateTime() async {
+    DateTime? pickedDate = await showDatePicker(
+      context: context,
+      initialDate: DateTime.now(),
+      firstDate: DateTime(2000),
+      lastDate: DateTime(2101),
+    );
+    if (pickedDate != null) {
+      TimeOfDay? pickedTime = await showTimePicker(
+        context: context,
+        initialTime: TimeOfDay.now(),
+      );
+      if (pickedTime != null) {
+        DateTime finalDateTime = DateTime(
+          pickedDate.year,
+          pickedDate.month,
+          pickedDate.day,
+          pickedTime.hour,
+          pickedTime.minute,
+        );
+
+        _dateTimeController.text =
+            DateFormat('yyyy-MM-dd HH:mm').format(finalDateTime) as String;
+      }
+    }
   }
 
   bool change = false;
@@ -189,10 +218,15 @@ class _FirebaseHomepageState extends State<FirebaseHomepage> {
                     ),
                   ),
                   TextField(
-                    controller: deadlinecontroller,
+                    controller: _dateTimeController,
                     decoration: InputDecoration(
-                      hintText: 'Deadline',
-                    ),
+                        hintText: 'Deadline',
+                        suffixIcon: GestureDetector(
+                          onTap: () {
+                            _pickDateTime();
+                          },
+                          child: const Icon(Icons.calendar_today),
+                        )),
                   ),
                   TextField(
                     controller: durationcontroller,
@@ -217,7 +251,7 @@ class _FirebaseHomepageState extends State<FirebaseHomepage> {
                           Map<String, dynamic> updatetask = {
                             'title': titlecontroller.text,
                             'description': descriptioncontroller.text,
-                            'deadline': deadlinecontroller.text,
+                            'deadline': _dateTimeController.text,
                             'taskduration': durationcontroller.text,
                             'id': id,
                           };

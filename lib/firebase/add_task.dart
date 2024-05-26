@@ -1,5 +1,8 @@
 import 'package:cipherx/firebase/firestore.dart';
+import 'package:cipherx/firebase/notifications/notification.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:random_string/random_string.dart';
 
 class AddTask extends StatefulWidget {
@@ -14,12 +17,57 @@ class _AddTaskState extends State<AddTask> {
   TextEditingController descriptioncontroller = TextEditingController();
   TextEditingController deadlinecontroller = TextEditingController();
   TextEditingController durationcontroller = TextEditingController();
+  TextEditingController _dateTimeController = TextEditingController();
+
+  NotificationService _notificationService = NotificationService();
+
+  @override
+  void initState() {
+    FirebaseFirestore.instance
+        .collection('persons')
+        .snapshots()
+        .listen((snapshot) {
+      for (var doc in snapshot.docs) {
+        DateTime scheduledTime = (doc['deadline'] as Timestamp).toDate();
+        _notificationService.scheduleNotification(scheduledTime);
+      }
+    });
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
+    Future<void> _pickDateTime() async {
+      DateTime? pickedDate = await showDatePicker(
+        context: context,
+        initialDate: DateTime.now(),
+        firstDate: DateTime(2000),
+        lastDate: DateTime(2101),
+      );
+      if (pickedDate != null) {
+        TimeOfDay? pickedTime = await showTimePicker(
+          context: context,
+          initialTime: TimeOfDay.now(),
+        );
+        if (pickedTime != null) {
+          DateTime finalDateTime = DateTime(
+            pickedDate.year,
+            pickedDate.month,
+            pickedDate.day,
+            pickedTime.hour,
+            pickedTime.minute,
+          );
+
+          _dateTimeController.text =
+              DateFormat('yyyy-MM-dd HH:mm').format(finalDateTime) as String;
+        }
+      }
+    }
+
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.amber,
-        title: Text('Add Task '),
+        title: const Text('Add Task '),
         centerTitle: true,
       ),
       body: Padding(
@@ -39,10 +87,15 @@ class _AddTaskState extends State<AddTask> {
               ),
             ),
             TextField(
-              controller: deadlinecontroller,
+              controller: _dateTimeController,
               decoration: InputDecoration(
-                hintText: 'Deadline',
-              ),
+                  hintText: 'Deadline',
+                  suffixIcon: GestureDetector(
+                    onTap: () {
+                      _pickDateTime();
+                    },
+                    child: const Icon(Icons.calendar_today),
+                  )),
             ),
             TextField(
               controller: durationcontroller,
@@ -59,7 +112,7 @@ class _AddTaskState extends State<AddTask> {
                   Map<String, dynamic> taskinfo = {
                     'title': titlecontroller.text,
                     'description': descriptioncontroller.text,
-                    'deadline': deadlinecontroller.text,
+                    'deadline': _dateTimeController.text,
                     'taskduration': durationcontroller.text,
                     'status': false,
                     'id': id,

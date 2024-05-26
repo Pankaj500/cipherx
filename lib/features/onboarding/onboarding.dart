@@ -189,10 +189,6 @@ class OnBoardingPage extends StatelessWidget {
                           emailcontroller.text.toString(),
                           passwordcontroller.text.toString(),
                           context);
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => const FirebaseHomepage()));
                     },
                     child: Container(
                       height: size.height * 0.07,

@@ -14,12 +14,12 @@ class DatabaseMedthod {
 
   Future updatetasks(String id, Map<String, dynamic> taskinfo) async {
     await FirebaseFirestore.instance
-        .collection("persons")
+        .collection("tasks")
         .doc(id)
         .update(taskinfo);
   }
 
   Future deletetasks(String id) async {
-    await FirebaseFirestore.instance.collection("persons").doc(id).delete();
+    await FirebaseFirestore.instance.collection("tasks").doc(id).delete();
   }
 }
