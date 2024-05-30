@@ -49,12 +49,27 @@ class _TaskNotifierState extends State<TaskNotifier> {
           'duration': doc['duration'],
           'status': doc['status'],
         });
+        print(tasks);
         _scheduleNotification(doc.id, doc['task'], deadline);
       }
       setState(() {
         _tasks = tasks;
       });
+
+      _cancelNotificationsForDeletedTasks(snapshot);
     });
+  }
+
+  Future<void> _cancelNotificationsForDeletedTasks(
+      QuerySnapshot snapshot) async {
+    final currentTaskIds = snapshot.docs.map((doc) => doc.id).toSet();
+    final previousTaskIds = _tasks.map((task) => task['id']).toSet();
+
+    final deletedTaskIds = previousTaskIds.difference(currentTaskIds);
+
+    for (final taskId in deletedTaskIds) {
+      await flutterLocalNotificationsPlugin.cancel(taskId.hashCode);
+    }
   }
 
   Future<void> _pickDateTime() async {
@@ -182,6 +197,7 @@ class _TaskNotifierState extends State<TaskNotifier> {
                       Checkbox(
                           value: task['status'],
                           onChanged: (value) async {
+                            print(_tasks);
                             Map<String, dynamic> changecheck = {
                               'status': !task['status'],
                             };

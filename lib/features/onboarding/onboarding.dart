@@ -1,5 +1,6 @@
 import 'package:cipherx/features/onboarding/auth.dart';
 import 'package:cipherx/features/onboarding/sign_in.dart';
+import 'package:cipherx/repositories/product._repo.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
@@ -11,6 +12,7 @@ class OnBoardingPage extends StatelessWidget {
   OnBoardingPage({super.key});
   final Auth _auth = Auth();
   bool value = false;
+  final GetProductList _getProductList = GetProductList();
   TextEditingController emailcontroller = TextEditingController();
   TextEditingController namecontroller = TextEditingController();
   TextEditingController passwordcontroller = TextEditingController();

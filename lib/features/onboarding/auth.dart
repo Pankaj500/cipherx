@@ -1,6 +1,6 @@
 import 'package:cipherx/features/product.dart';
-import 'package:cipherx/firebase/homepage.dart';
 import 'package:cipherx/firebase/messaging/tasks_home.dart';
+
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
@@ -16,6 +16,7 @@ class Auth {
     try {
       UserCredential credential = await _firebaseAuth
           .signInWithEmailAndPassword(email: email, password: password);
+      print(_firebaseAuth.currentUser?.uid);
       Navigator.push(
         context,
         MaterialPageRoute(
@@ -41,7 +42,7 @@ class Auth {
       Navigator.push(
         context,
         MaterialPageRoute(
-          builder: (context) => const HomeTasks(),
+          builder: (context) => const MyProduct(),
         ),
       );
     } catch (e) {
