@@ -187,7 +187,7 @@ class _TaskNotifierState extends State<TaskNotifier> {
                     height: heigth * 0.003,
                   ),
                   const Text(
-                    'Duration',
+                    'priority',
                     style: TextStyle(fontSize: 18),
                   ),
                   Text(task['duration']),

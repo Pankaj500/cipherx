@@ -60,6 +60,9 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
     }
   }
 
+  String? _selecteditem;
+  List<String> prioritylist = ['High', 'Medium', 'Low'];
+
   @override
   Widget build(BuildContext context) {
     var heigth = MediaQuery.of(context).size.height;
@@ -94,7 +97,10 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
             ),
             TextField(
               controller: _durationController,
-              decoration: InputDecoration(labelText: 'Duration'),
+              decoration: InputDecoration(
+                labelText: 'Priortiy',
+                hintText: 'enter priorty high or low',
+              ),
             ),
             SizedBox(height: 20),
             ElevatedButton(
