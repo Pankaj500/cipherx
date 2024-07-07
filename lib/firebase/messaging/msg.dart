@@ -48,11 +48,12 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
     String id = randomAlphaNumeric(10);
 
     if (_taskController.text.isNotEmpty && _selectedDateTime != null) {
+      int priority = int.parse(_durationController.text);
       await FirebaseFirestore.instance.collection('tasks').add({
         'task': _taskController.text,
         'deadline': _selectedDateTime,
         'description': _descriptionController.text,
-        'duration': _durationController.text,
+        'duration': priority,
         'status': false,
         'id': id,
       });

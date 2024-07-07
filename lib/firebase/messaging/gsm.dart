@@ -17,6 +17,10 @@ class _TaskNotifierState extends State<TaskNotifier> {
   List<Map<String, dynamic>> _tasks = [];
   DateTime? _selectedDateTime;
 
+  int current = 0;
+
+  String _orderby = 'task';
+
   @override
   void initState() {
     super.initState();
@@ -36,6 +40,7 @@ class _TaskNotifierState extends State<TaskNotifier> {
   void _listenForTasks() {
     FirebaseFirestore.instance
         .collection('tasks')
+        .orderBy(_orderby)
         .snapshots()
         .listen((snapshot) {
       List<Map<String, dynamic>> tasks = [];
@@ -49,7 +54,6 @@ class _TaskNotifierState extends State<TaskNotifier> {
           'duration': doc['duration'],
           'status': doc['status'],
         });
-        print(tasks);
         _scheduleNotification(doc.id, doc['task'], deadline);
       }
       setState(() {
@@ -135,108 +139,181 @@ class _TaskNotifierState extends State<TaskNotifier> {
   TextEditingController _dateTimeController = TextEditingController();
   TextEditingController _descriptionController = TextEditingController();
   TextEditingController _durationController = TextEditingController();
+
   @override
   Widget build(BuildContext context) {
     var heigth = MediaQuery.of(context).size.height;
     var width = MediaQuery.of(context).size.width;
-    return ListView.builder(
-      itemCount: _tasks.length,
-      itemBuilder: (context, index) {
-        final task = _tasks[index];
-        return
-            // ListTile(
-            //   title: Text(task['task']),
-            //   subtitle:
-            //       Text(DateFormat('yyyy-MM-dd HH:mm').format(task['deadline'])),
-            // );
-            Padding(
-          padding: EdgeInsets.only(
-              left: width * 0.03, right: width * 0.03, top: width * 0.03),
-          child: Container(
-            width: MediaQuery.of(context).size.width,
-            decoration: const BoxDecoration(
-              color: Colors.amber,
-            ),
-            child: Padding(
-              padding: const EdgeInsets.only(left: 10, right: 10),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  const Text(
-                    'Title',
-                    style: TextStyle(fontSize: 18),
-                  ),
-                  Text(task['task']),
-                  SizedBox(
-                    height: heigth * 0.003,
-                  ),
-                  const Text(
-                    'Deadline',
-                    style: TextStyle(fontSize: 18),
-                  ),
-                  Text(DateFormat('yyyy-MM-dd HH:mm').format(task['deadline'])),
-                  SizedBox(
-                    height: heigth * 0.003,
-                  ),
-                  const Text(
-                    'Description',
-                    style: TextStyle(fontSize: 18),
-                  ),
-                  Text(task['description']),
-                  SizedBox(
-                    height: heigth * 0.003,
-                  ),
-                  const Text(
-                    'priority',
-                    style: TextStyle(fontSize: 18),
-                  ),
-                  Text(task['duration']),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Checkbox(
-                          value: task['status'],
-                          onChanged: (value) async {
-                            print(_tasks);
-                            Map<String, dynamic> changecheck = {
-                              'status': !task['status'],
-                            };
-                            await DatabaseMedthod()
-                                .updatetasks(task['id'], changecheck);
-                          }),
-                      GestureDetector(
-                        onTap: () {
-                          _taskController.text = task['task'];
-                          _descriptionController.text = task['description'];
-                          _dateTimeController.text =
-                              task['deadline'].toString();
-                          _durationController.text = task['duration'];
 
-                          edittask(task['id']);
-                        },
-                        child: const Icon(Icons.edit),
-                      ),
-                      GestureDetector(
-                        onTap: () async {
-                          await DatabaseMedthod().deletetasks(task['id']);
-                        },
-                        child: const Icon(Icons.delete),
-                      ),
-                    ],
-                  ),
-                  const SizedBox(
-                    height: 10,
-                  ),
-                ],
-              ),
-            ),
+    List<String> sortitem = ['by deadline', 'by priority'];
+
+    return SingleChildScrollView(
+      child: Column(
+        children: [
+          SizedBox(
+            height: heigth * 0.02,
           ),
-        );
-      },
+          ElevatedButton(
+              onPressed: () {
+                showBottomSheet(
+                    context: context,
+                    builder: (context) {
+                      return SizedBox(
+                        height: heigth * 0.2,
+                        width: width,
+                        child: Padding(
+                            padding: EdgeInsets.only(
+                                left: width * 0.03,
+                                right: width * 0.03,
+                                top: heigth * 0.04),
+                            child: ListView.builder(
+                                itemCount: 2,
+                                shrinkWrap: true,
+                                physics: NeverScrollableScrollPhysics(),
+                                itemBuilder: (context, index) {
+                                  return InkWell(
+                                    onTap: () {
+                                      if (index == 0) {
+                                        _orderby = 'deadline';
+                                      } else {
+                                        _orderby = 'duration';
+                                      }
+                                      _listenForTasks();
+                                      setState(() {});
+                                      Navigator.pop(context);
+                                    },
+                                    child: Row(
+                                      children: [
+                                        Container(
+                                          height: 20,
+                                          width: 20,
+                                          decoration: BoxDecoration(
+                                            shape: BoxShape.circle,
+                                            color: Colors.white,
+                                            border:
+                                                Border.all(color: Colors.grey),
+                                          ),
+                                        ),
+                                        SizedBox(
+                                          width: 10,
+                                        ),
+                                        Text(
+                                          sortitem[index],
+                                          style: TextStyle(
+                                              fontSize: 20, color: Colors.blue),
+                                        ),
+                                      ],
+                                    ),
+                                  );
+                                })),
+                      );
+                    });
+              },
+              child: Text('Sort')),
+          ListView.builder(
+            shrinkWrap: true,
+            itemCount: _tasks.length,
+            physics: NeverScrollableScrollPhysics(),
+            itemBuilder: (context, index) {
+              final task = _tasks[index];
+              return Padding(
+                padding: EdgeInsets.only(
+                    left: width * 0.03, right: width * 0.03, top: width * 0.03),
+                child: Container(
+                  width: MediaQuery.of(context).size.width,
+                  decoration: BoxDecoration(
+                    color: Colors.amber,
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                  child: Padding(
+                    padding: EdgeInsets.only(
+                        left: width * 0.03,
+                        right: width * 0.03,
+                        top: heigth * 0.02),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const Text(
+                          'Title',
+                          style: TextStyle(fontSize: 18),
+                        ),
+                        Text(task['task']),
+                        SizedBox(
+                          height: heigth * 0.003,
+                        ),
+                        const Text(
+                          'Deadline',
+                          style: TextStyle(fontSize: 18),
+                        ),
+                        Text(DateFormat('yyyy-MM-dd HH:mm')
+                            .format(task['deadline'])),
+                        SizedBox(
+                          height: heigth * 0.003,
+                        ),
+                        const Text(
+                          'Description',
+                          style: TextStyle(fontSize: 18),
+                        ),
+                        Text(task['description']),
+                        SizedBox(
+                          height: heigth * 0.003,
+                        ),
+                        const Text(
+                          'priority',
+                          style: TextStyle(fontSize: 18),
+                        ),
+                        Text(task['duration'].toString()),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Checkbox(
+                                value: task['status'],
+                                onChanged: (value) async {
+                                  Map<String, dynamic> changecheck = {
+                                    'status': value
+                                  };
+                                  await DatabaseMedthod()
+                                      .updatetasks(task['id'], changecheck);
+                                }),
+                            GestureDetector(
+                              onTap: () {
+                                _taskController.text = task['task'];
+                                _descriptionController.text =
+                                    task['description'];
+                                _dateTimeController.text =
+                                    DateFormat('yyyy-MM-dd HH:mm')
+                                        .format(task['deadline']);
+                                _durationController.text =
+                                    task['duration'].toString();
+
+                                edittask(task['id']);
+                              },
+                              child: const Icon(Icons.edit),
+                            ),
+                            GestureDetector(
+                              onTap: () async {
+                                await DatabaseMedthod().deletetasks(task['id']);
+                              },
+                              child: const Icon(Icons.delete),
+                            ),
+                          ],
+                        ),
+                        const SizedBox(
+                          height: 10,
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              );
+            },
+          ),
+        ],
+      ),
     );
   }
 
-  Future edittask(id) async {
+  Future edittask(String id) async {
     showDialog(
         context: context,
         builder: (context) {
@@ -276,6 +353,7 @@ class _TaskNotifierState extends State<TaskNotifier> {
                     decoration: const InputDecoration(
                       hintText: 'Task Duration',
                     ),
+                    keyboardType: TextInputType.number,
                   ),
                   const SizedBox(
                     height: 30,
@@ -295,7 +373,7 @@ class _TaskNotifierState extends State<TaskNotifier> {
                             'task': _taskController.text,
                             'description': _descriptionController.text,
                             'deadline': _selectedDateTime,
-                            'duration': _durationController.text,
+                            'duration': int.parse(_durationController.text),
                             'id': id,
                           };
 

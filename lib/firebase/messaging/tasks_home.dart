@@ -17,6 +17,7 @@ class _HomeTasksState extends State<HomeTasks> {
         title: const Text('Task Manager'),
         backgroundColor: Colors.blue,
         centerTitle: true,
+        automaticallyImplyLeading: false,
       ),
       body: Column(
         children: [

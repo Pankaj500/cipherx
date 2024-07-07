@@ -2,6 +2,7 @@ import 'package:cipherx/features/splash_screen.dart';
 import 'package:cipherx/firebase/messaging/gsm.dart';
 import 'package:cipherx/firebase/messaging/msg.dart';
 import 'package:cipherx/firebase/notifications/messaging.dart';
+import 'package:cipherx/firebase/practice.dart';
 
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
